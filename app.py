@@ -1,13 +1,18 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+# Route chính để kiểm tra server hoạt động
 @app.route('/')
-def home():
-    return "EPS-DHT11-WEB Flask Server is running!"
+def index():
+    return '✅ Flask server is running!'
 
-@app.route('/push', methods=['POST'])
-def push_data():
+# Route để nhận dữ liệu POST từ ESP8266
+@app.route('/data', methods=['POST'])
+def receive_data():
     data = request.get_json()
-    print("Dữ liệu nhận:", data)
-    return "OK", 200
+    print("Nhận dữ liệu từ ESP8266:", data)
+    return jsonify({"status": "received", "data": data}), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=10000)
