@@ -1,18 +1,42 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template_string
+import csv
+import datetime
 
 app = Flask(__name__)
 
-# Route chính để kiểm tra server hoạt động
-@app.route('/')
-def index():
-    return '✅ Flask server is running!'
+# 🔴 Biến toàn cục lưu dữ liệu mới nhất
+latest_data = {'temperature': None, 'humidity': None}
 
-# Route để nhận dữ liệu POST từ ESP8266
 @app.route('/data', methods=['POST'])
 def receive_data():
+    global latest_data
     data = request.get_json()
-    print("Nhận dữ liệu từ ESP8266:", data)
-    return jsonify({"status": "received", "data": data}), 200
+    print("Received data:", data)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    # Cập nhật dữ liệu mới nhất
+    latest_data = {
+        'temperature': data.get('temperature'),
+        'humidity': data.get('humidity')
+    }
+
+    # Lưu vào file CSV
+    with open('data_log.csv', mode='a', newline='') as file:
+        writer = csv.writer(file)
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        writer.writerow([now, latest_data['temperature'], latest_data['humidity']])
+
+    return jsonify({'message': 'Data received successfully'}), 200
+
+# 🔍 Route để xem dữ liệu
+@app.route('/')
+def show_data():
+    return render_template_string("""
+        <h2>Nhiệt độ & Độ ẩm từ ESP8266</h2>
+        <p><strong>Nhiệt độ:</strong> {{ temp }} °C</p>
+        <p><strong>Độ ẩm:</strong> {{ hum }} %</p>
+        <hr>
+        <p>📡 Tự động cập nhật mỗi 10s</p>
+        <script>
+            setTimeout(() => location.reload(), 10000); // Tự reload sau 10s
+        </script>
+    """, temp=latest_data['temperature'], hum=latest_data['humidity'])
