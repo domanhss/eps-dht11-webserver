@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template_string
 import csv
 import datetime
+import os  # 👈 THÊM dòng này
 
 app = Flask(__name__)
 
@@ -40,3 +41,8 @@ def show_data():
             setTimeout(() => location.reload(), 10000); // Tự reload sau 10s
         </script>
     """, temp=latest_data['temperature'], hum=latest_data['humidity'])
+
+# ✅ Cần thêm đoạn này để Render chạy được
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
