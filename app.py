@@ -1,10 +1,13 @@
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "ESP8266 DHT11 Web Server Đang hoạt động!"
+    return "EPS-DHT11-WEB Flask Server is running!"
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+@app.route('/push', methods=['POST'])
+def push_data():
+    data = request.get_json()
+    print("Dữ liệu nhận:", data)
+    return "OK", 200
