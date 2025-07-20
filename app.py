@@ -32,7 +32,7 @@ def receive_data():
 @app.route('/')
 def show_data():
     return render_template_string("""
-        <h2>Nhiệt độ & Độ ẩm từ ESP8266</h2>
+        <h2>THÔNG TIN NHIỆT ĐỘ & ĐỘ ẨM TỪ CĂN HỘ GIA ĐÌNH</h2>
         <p><strong>Nhiệt độ:</strong> {{ temp }} °C</p>
         <p><strong>Độ ẩm:</strong> {{ hum }} %</p>
         <hr>
