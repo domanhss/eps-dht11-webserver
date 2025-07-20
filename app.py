@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template_string
 import csv
 import datetime
 import os
+import pytz
 
 app = Flask(__name__)
 
@@ -14,7 +15,10 @@ def receive_data():
     data = request.get_json()
     print("Received data:", data)
 
-    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # ✅ Lấy thời gian theo múi giờ Việt Nam (Asia/Ho_Chi_Minh)
+    tz_vn = pytz.timezone('Asia/Ho_Chi_Minh')
+    now = datetime.datetime.now(tz_vn).strftime('%Y-%m-%d %H:%M:%S')
 
     # Cập nhật dữ liệu mới nhất
     latest_data = {
