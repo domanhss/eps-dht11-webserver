@@ -1,31 +1,31 @@
 from flask import Flask, request, jsonify, render_template_string
 import csv
 import datetime
-import os  # 👈 THÊM dòng này
+import os
 
 app = Flask(__name__)
 
 # 🔴 Biến toàn cục lưu dữ liệu mới nhất
-latest_data = {'temperature': None, 'humidity': None,'timestamp': None}
+latest_data = {'temperature': None, 'humidity': None, 'timestamp': None}
 
 @app.route('/data', methods=['POST'])
 def receive_data():
     global latest_data
     data = request.get_json()
     print("Received data:", data)
+
     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     # Cập nhật dữ liệu mới nhất
     latest_data = {
         'temperature': data.get('temperature'),
-        'humidity': data.get('humidity')
+        'humidity': data.get('humidity'),
         'timestamp': now
     }
 
     # Lưu vào file CSV
     with open('data_log.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
-        # now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         writer.writerow([now, latest_data['temperature'], latest_data['humidity']])
 
     return jsonify({'message': 'Data received successfully'}), 200
