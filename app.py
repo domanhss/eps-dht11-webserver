@@ -41,7 +41,7 @@ def show_data():
         <hr>
         <p>📡 Tự động cập nhật mỗi 10s</p>
         <script>
-            setTimeout(() => location.reload(), 10000); // Tự reload sau 10s
+            setTimeout(() => location.reload(), 30000); // Tự reload sau 30s
         </script>
     """, temp=latest_data['temperature'], hum=latest_data['humidity'], time=latest_data['timestamp'])
 
