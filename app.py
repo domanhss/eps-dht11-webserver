@@ -6,24 +6,26 @@ import os  # 👈 THÊM dòng này
 app = Flask(__name__)
 
 # 🔴 Biến toàn cục lưu dữ liệu mới nhất
-latest_data = {'temperature': None, 'humidity': None}
+latest_data = {'temperature': None, 'humidity': None,'timestamp': None}
 
 @app.route('/data', methods=['POST'])
 def receive_data():
     global latest_data
     data = request.get_json()
     print("Received data:", data)
+    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     # Cập nhật dữ liệu mới nhất
     latest_data = {
         'temperature': data.get('temperature'),
         'humidity': data.get('humidity')
+        'timestamp': now
     }
 
     # Lưu vào file CSV
     with open('data_log.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
-        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         writer.writerow([now, latest_data['temperature'], latest_data['humidity']])
 
     return jsonify({'message': 'Data received successfully'}), 200
@@ -35,12 +37,13 @@ def show_data():
         <h2>THÔNG TIN NHIỆT ĐỘ & ĐỘ ẨM TỪ CĂN HỘ GIA ĐÌNH</h2>
         <p><strong>Nhiệt độ:</strong> {{ temp }} °C</p>
         <p><strong>Độ ẩm:</strong> {{ hum }} %</p>
+        <p><strong>Cập nhật lúc:</strong> {{ time }}</p>
         <hr>
         <p>📡 Tự động cập nhật mỗi 10s</p>
         <script>
             setTimeout(() => location.reload(), 10000); // Tự reload sau 10s
         </script>
-    """, temp=latest_data['temperature'], hum=latest_data['humidity'])
+    """, temp=latest_data['temperature'], hum=latest_data['humidity'], time=latest_data['timestamp'])
 
 # ✅ Cần thêm đoạn này để Render chạy được
 if __name__ == '__main__':
