@@ -39,7 +39,7 @@ def show_data():
         <p><strong>Độ ẩm:</strong> {{ hum }} %</p>
         <p><strong>Cập nhật lúc:</strong> {{ time }}</p>
         <hr>
-        <p>📡 Tự động cập nhật mỗi 10s</p>
+        <p>📡 Tự động cập nhật mỗi 30s</p>
         <script>
             setTimeout(() => location.reload(), 30000); // Tự reload sau 30s
         </script>
